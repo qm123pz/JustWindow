@@ -155,6 +155,7 @@ public class DynamicIsland extends Application {
     private TextArea translateOutputArea;
     private javafx.scene.shape.Polygon translateArrow;
     private sb.justwindow.translate.TransApi baiduTransApi;
+    private Timeline translationDebounceTimer;
     private Label spotifyTrackLabel;
     private Label spotifyArtistLabel;
     private Label spotifyStatusLabel;
@@ -2315,7 +2316,7 @@ public class DynamicIsland extends Application {
         
         this.translateInputField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.equals(oldValue)) {
-                this.performTranslation(newValue);
+                this.scheduleTranslation(newValue);
             }
         });
     }
@@ -2372,6 +2373,12 @@ public class DynamicIsland extends Application {
         this.isTranslateMode = false;
         this.isAnimating = true;
         
+        // 清理防抖定时器
+        if (this.translationDebounceTimer != null) {
+            this.translationDebounceTimer.stop();
+            this.translationDebounceTimer = null;
+        }
+        
         this.animateFadeOut(this.translateContainer, 200);
         
         PauseTransition fadeOutDelay = new PauseTransition(Duration.millis(200.0));
@@ -2417,6 +2424,25 @@ public class DynamicIsland extends Application {
             }
         });
         this.translateArrow.setFill(isDark ? Color.BLACK : Color.WHITE);
+    }
+    
+    private void scheduleTranslation(String input) {
+        // 取消之前的定时器
+        if (this.translationDebounceTimer != null) {
+            this.translationDebounceTimer.stop();
+        }
+        
+        // 如果输入为空，立即清空输出
+        if (input == null || input.trim().isEmpty()) {
+            this.translateOutputArea.setText("");
+            return;
+        }
+        
+        // 创建新的防抖定时器，延迟800毫秒后执行翻译
+        this.translationDebounceTimer = new Timeline(new KeyFrame(Duration.millis(800.0), e -> {
+            this.performTranslation(input);
+        }));
+        this.translationDebounceTimer.play();
     }
     
     private void performTranslation(String input) {

@@ -1,81 +1,133 @@
 package sb.justwindow;
 
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.InputStream;
+import java.util.Map;
+
 /**
  * API密钥配置类
- * 管理项目中使用的各种API密钥和配置信息
- * 在此处修改您的API密钥配置
+ * 从YAML配置文件中加载API密钥和配置信息
  */
 public class ApiKey {
+    private static Map<String, Object> config;
+
+    static {
+        loadConfig();
+    }
 
     /**
-     * 百度翻译API AppID
-     * 获取方式：
-     * 1. 访问 https://fanyi-api.baidu.com/
-     * 2. 注册百度开发者账号
-     * 3. 创建翻译应用获取APP_ID
+     * 加载YAML配置文件
      */
-    public static final String BAIDU_TRANSLATE_APP_ID = "20251002002468255";
-    
+    private static void loadConfig() {
+        try (InputStream input = ApiKey.class.getClassLoader()
+                .getResourceAsStream("api-config.yml")) {
+            if (input == null) {
+                System.err.println("警告: 找不到配置文件 api-config.yml");
+                return;
+            }
+            Yaml yaml = new Yaml();
+            config = yaml.load(input);
+        } catch (Exception e) {
+            System.err.println("加载配置文件失败: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     /**
-     * 百度翻译API 密钥
-     * 获取方式：
-     * 1. 在百度翻译开放平台创建应用后获取
-     * 2. 与APP_ID配套使用
+     * 获取配置值（支持嵌套路径，如 "baidu.translate.app-id"）
      */
-    public static final String BAIDU_TRANSLATE_SECURITY_KEY = "85oeM5TjM2UwSIOTA6FA";
-    
-    /**
-     * Spotify Client ID
-     * 获取方式：
-     * 1. 访问 https://developer.spotify.com/dashboard
-     * 2. 创建Spotify应用获取Client ID
-     */
-    public static final String SPOTIFY_CLIENT_ID = "0c880517150e4b5c8c85ae7f9b7a2350";
-    
-    /**
-     * Spotify Client Secret
-     * 获取方式：
-     * 1. 在Spotify开发者面板中创建应用后获取
-     * 2. 与Client ID配套使用
-     */
-    public static final String SPOTIFY_CLIENT_SECRET = "5879d982b1a04adda7bba4c7bf4116f8";
-    
-    /**
-     * Spotify重定向URI
-     * 用于OAuth认证的回调地址
-     * 需要在Spotify应用设置中配置相同的URI
-     */
-    public static final String SPOTIFY_REDIRECT_URI = "http://127.0.0.1:8000/callback";
-    
+    @SuppressWarnings("unchecked")
+    private static String getProperty(String path) {
+        if (config == null) {
+            return "";
+        }
+
+        // 首先检查环境变量（优先级最高）
+        String envKey = path.toUpperCase().replace(".", "_").replace("-", "_");
+        String envValue = System.getenv(envKey);
+        if (envValue != null && !envValue.isEmpty()) {
+            return envValue;
+        }
+
+        // 然后从配置文件读取
+        String[] keys = path.split("\\.");
+        Object value = config;
+
+        for (String key : keys) {
+            if (value instanceof Map) {
+                value = ((Map<String, Object>) value).get(key);
+                if (value == null) {
+                    return "";
+                }
+            } else {
+                return "";
+            }
+        }
+
+        return value != null ? value.toString() : "";
+    }
+
+    // 百度翻译API配置
+    public static String getBaiduTranslateAppId() {
+        return getProperty("baidu.translate.app-id");
+    }
+
+    public static String getBaiduTranslateSecurityKey() {
+        return getProperty("baidu.translate.security-key");
+    }
+
+    // Spotify API配置
+    public static String getSpotifyClientId() {
+        return getProperty("spotify.client-id");
+    }
+
+    public static String getSpotifyClientSecret() {
+        return getProperty("spotify.client-secret");
+    }
+
+    public static String getSpotifyRedirectUri() {
+        return getProperty("spotify.redirect-uri");
+    }
+
     /**
      * 检查百度翻译API配置是否完整
-     * @return 如果AppID和密钥都已配置则返回true
      */
     public static boolean isBaiduTranslateConfigured() {
-        return !BAIDU_TRANSLATE_APP_ID.isEmpty() && !BAIDU_TRANSLATE_SECURITY_KEY.isEmpty();
+        String appId = getBaiduTranslateAppId();
+        String securityKey = getBaiduTranslateSecurityKey();
+        return appId != null && !appId.isEmpty()
+                && securityKey != null && !securityKey.isEmpty();
     }
 
     /**
      * 检查Spotify API配置是否完整
-     * @return 如果Client ID和Secret都已配置则返回true
      */
     public static boolean isSpotifyConfigured() {
-        return !SPOTIFY_CLIENT_ID.isEmpty() && !SPOTIFY_CLIENT_SECRET.isEmpty();
+        String clientId = getSpotifyClientId();
+        String clientSecret = getSpotifyClientSecret();
+        return clientId != null && !clientId.isEmpty()
+                && clientSecret != null && !clientSecret.isEmpty();
     }
-    
+
     /**
      * 百度翻译API配置信息
-     * @return 包含AppID和密钥的数组，[0]为AppID，[1]为密钥
      */
     public static String[] getBaiduTranslateConfig() {
-        return new String[]{BAIDU_TRANSLATE_APP_ID, BAIDU_TRANSLATE_SECURITY_KEY};
+        return new String[]{
+                getBaiduTranslateAppId(),
+                getBaiduTranslateSecurityKey()
+        };
     }
-    
+
     /**
-     * SpotifyAPI配置信息
-     * @return 包含Client配置的数组，[0]为Client ID，[1]为Client Secret，[2]为重定向URI
+     * Spotify API配置信息
      */
     public static String[] getSpotifyConfig() {
-        return new String[]{SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI};
+        return new String[]{
+                getSpotifyClientId(),
+                getSpotifyClientSecret(),
+                getSpotifyRedirectUri()
+        };
     }
 }
