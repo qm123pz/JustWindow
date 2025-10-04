@@ -35,6 +35,7 @@ javafx {
 }
 
 dependencies {
+    implementation ("org.yaml:snakeyaml:2.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
     implementation("org.json:json:20240303")

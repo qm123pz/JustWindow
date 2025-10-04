@@ -1,0 +1,11 @@
+# API密钥配置模板
+# 请填入真实密钥
+baidu:
+  translate:
+    app-id: "202510xxxxxxxxxxxxxxxxxxx"
+    security-key: "85oeMxxxxxxxxxxxxxxxxxxx"
+
+spotify:
+  client-id: "0c880517150xxxxxxxxxxxxxxxxxxx"
+  client-secret: "5879d982bxxxxxxxxxxxxxxxxxxx"
+  redirect-uri: "http://127.0.0.1:8000/callback"
