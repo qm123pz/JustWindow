@@ -14,7 +14,7 @@ public class ApiKey {
      * 2. 注册百度开发者账号
      * 3. 创建翻译应用获取APP_ID
      */
-    public static final String BAIDU_TRANSLATE_APP_ID = "20251002002468255";
+    public static final String BAIDU_TRANSLATE_APP_ID = "你的百度翻译API 软件ID";
     
     /**
      * 百度翻译API 密钥
@@ -22,7 +22,7 @@ public class ApiKey {
      * 1. 在百度翻译开放平台创建应用后获取
      * 2. 与APP_ID配套使用
      */
-    public static final String BAIDU_TRANSLATE_SECURITY_KEY = "85oeM5TjM2UwSIOTA6FA";
+    public static final String BAIDU_TRANSLATE_SECURITY_KEY = "你的百度翻译API 密钥";
     
     /**
      * Spotify Client ID
@@ -30,7 +30,7 @@ public class ApiKey {
      * 1. 访问 https://developer.spotify.com/dashboard
      * 2. 创建Spotify应用获取Client ID
      */
-    public static final String SPOTIFY_CLIENT_ID = "0c880517150e4b5c8c85ae7f9b7a2350";
+    public static final String SPOTIFY_CLIENT_ID = "你的Spotify 软件ID";
     
     /**
      * Spotify Client Secret
@@ -38,14 +38,14 @@ public class ApiKey {
      * 1. 在Spotify开发者面板中创建应用后获取
      * 2. 与Client ID配套使用
      */
-    public static final String SPOTIFY_CLIENT_SECRET = "5879d982b1a04adda7bba4c7bf4116f8";
+    public static final String SPOTIFY_CLIENT_SECRET = "你的Spotify Api 密钥";
     
     /**
      * Spotify重定向URI
      * 用于OAuth认证的回调地址
      * 需要在Spotify应用设置中配置相同的URI
      */
-    public static final String SPOTIFY_REDIRECT_URI = "http://127.0.0.1:8000/callback";
+    public static final String SPOTIFY_REDIRECT_URI = "你的Spotify软件重定向URL";
     
     /**
      * 检查百度翻译API配置是否完整
