@@ -257,8 +257,8 @@ A: 尝试删除配置文件重置设置，或检查系统DPI缩放设置
 
 ## 📞 联系方式
 
-- **项目链接**: [https://github.com/yourusername/JustWindow](https://github.com/yourusername/JustWindow)
-- **问题反馈**: [Issues](https://github.com/yourusername/JustWindow/issues)
+- **项目链接**: [https://github.com/yourusername/JustWindow](https://github.com/qm123pz/JustWindow)
+- **问题反馈**: [Issues](https://github.com/qm123pz/JustWindow/issues)
 
 ---
 
